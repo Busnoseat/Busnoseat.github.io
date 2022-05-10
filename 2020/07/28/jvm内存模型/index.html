@@ -84,13 +84,25 @@
 
 
 
+<meta name="description" content="JVM 内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【JAVA 堆、方法区】、直接内存。
+
+线程私有数据区域生命周期与线程相同, 依赖用户线程的启动/结束 而 创建/销毁(在 HotspotVM 内, 每个线程都与操作系统的本地线程直接映射, 因此这部分内存区域的存/否跟随本地线程的生/死对应)。
+线程共享区域随虚拟机的启动/关闭而创建/销毁。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jvm内存模型">
 <meta property="og:url" content="http://yoursite.com/2020/07/28/jvm内存模型/index.html">
 <meta property="og:site_name" content="学习是件开心事">
-<meta property="og:updated_time" content="2020-08-10T15:58:37.937Z">
+<meta property="og:description" content="JVM 内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【JAVA 堆、方法区】、直接内存。
+
+线程私有数据区域生命周期与线程相同, 依赖用户线程的启动/结束 而 创建/销毁(在 HotspotVM 内, 每个线程都与操作系统的本地线程直接映射, 因此这部分内存区域的存/否跟随本地线程的生/死对应)。
+线程共享区域随虚拟机的启动/关闭而创建/销毁。">
+<meta property="og:updated_time" content="2022-05-10T04:42:51.799Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jvm内存模型">
+<meta name="twitter:description" content="JVM 内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【JAVA 堆、方法区】、直接内存。
+
+线程私有数据区域生命周期与线程相同, 依赖用户线程的启动/结束 而 创建/销毁(在 HotspotVM 内, 每个线程都与操作系统的本地线程直接映射, 因此这部分内存区域的存/否跟随本地线程的生/死对应)。
+线程共享区域随虚拟机的启动/关闭而创建/销毁。">
 
 
 
@@ -308,7 +320,14 @@
       
 
       
-        
+        <a id="more"></a>
+<p>JVM 内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区<br>域【JAVA 堆、方法区】、直接内存。</p>
+<ul>
+<li>线程私有数据区域生命周期与线程相同, 依赖用户线程的启动/结束 而 创建/销毁(在 Hotspot<br>VM 内, 每个线程都与操作系统的本地线程直接映射, 因此这部分内存区域的存/否跟随本地线程的<br>生/死对应)。</li>
+<li>线程共享区域随虚拟机的启动/关闭而创建/销毁。</li>
+<li></li>
+</ul>
+
       
     </div>
 
