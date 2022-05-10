@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="mybatis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="mybatis虽然一直用，但是执行过程一直不是很理解，最近在几位大佬的博客里学习并整理以下内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mybatis的原理">
+<meta property="og:url" content="http://yoursite.com/2021/04/22/mybatis的运行原理/index.html">
+<meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="mybatis虽然一直用，但是执行过程一直不是很理解，最近在几位大佬的博客里学习并整理以下内容。">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/1.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/2.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/3.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/4.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/5.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/6.png">
+<meta property="og:image" content="http://yoursite.com/asset/article/20210424/7.jpg">
+<meta property="og:updated_time" content="2021-04-24T13:45:46.878Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mybatis的原理">
+<meta name="twitter:description" content="mybatis虽然一直用，但是执行过程一直不是很理解，最近在几位大佬的博客里学习并整理以下内容。">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20210424/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/04/22/mybatis的运行原理/"/>
+
+
+
+
+
+  <title> mybatis的原理 | 学习是件开心事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">学习是件开心事</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/22/mybatis的运行原理/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                mybatis的原理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-04-22T22:37:48+08:00">
+                2021-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>mybatis虽然一直用，但是执行过程一直不是很理解，最近在几位大佬的博客里学习并整理以下内容。<a id="more"></a>mybatis总的来说执行流程总共分为3个步骤</p>
+<ul>
+<li>解析配置文件</li>
+<li>创建sqlsession对象</li>
+<li>调用SqlSession中的api，传入Statement Id和参数，底层最后调用jdbc执行SQL语句，封装结果返回</li>
+</ul>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><h3 id="传统工作模式"><a href="#传统工作模式" class="headerlink" title="传统工作模式"></a>传统工作模式</h3><p>用最原始的方式，摒除了各种包装，也最能体现mybatis最初的实现流程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) &#123;</div><div class="line">// 解析配置文件</div><div class="line">InputStream inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);</div><div class="line">SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);</div><div class="line"></div><div class="line">// 获取sqlsession对象</div><div class="line">SqlSession sqlSession = factory.openSession();</div><div class="line">String name = &quot;tom&quot;;</div><div class="line"></div><div class="line">// 调用sqlsession的api</div><div class="line">List&lt;User&gt; list = sqlSession.selectList(&quot;com.demo.mapper.UserMapper.getUserByName&quot;,params);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="使用Mapper接口"><a href="#使用Mapper接口" class="headerlink" title="使用Mapper接口"></a>使用Mapper接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">//前三步都相同</div><div class="line">InputStream inputStream = Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);</div><div class="line">SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);</div><div class="line">SqlSession sqlSession = factory.openSession();</div><div class="line"></div><div class="line">//这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。</div><div class="line">UserMapper mapper = sqlSession.getMapper(UserMapper.class);</div><div class="line">List&lt;User&gt; list = mapper.getUserByName(&quot;tom&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于面向接口编程的趋势，MyBatis也实现了通过接口调用mapper配置文件中的SQL语句，相比较传统工作模式做了些许封装。获取到sqlsession后，调用getMapper接口，通过动态代理，统一生成MapperProxy对象，并调用exectuor执行语句，executor执行语句最终也是调用sqlsession的api， 传入Statement Id和参数，内部进行复杂的处理，最后调用jdbc执行SQL语句，封装结果返回。</p>
+<h3 id="spring整合mybatis"><a href="#spring整合mybatis" class="headerlink" title="spring整合mybatis"></a>spring整合mybatis</h3><h2 id="初始化配置文件"><a href="#初始化配置文件" class="headerlink" title="初始化配置文件"></a>初始化配置文件</h2><p>初始化配置文件的本质是创建configuration对象，将解析的xml数据封装到Configuration内部的属性中。xml中的标签有<strong>properties（属性），settings（设置），typeAliases（类型别名），typeHandlers（类型处理器），objectFactory（对象工厂），mappers（映射器）</strong>等，Configuration也有对应的对象属性来封装它们。</p>
+<h3 id="解析的内容"><a href="#解析的内容" class="headerlink" title="解析的内容"></a>解析的内容</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">// XMLConfigBuilder.java</div><div class="line"></div><div class="line">   private void parseConfiguration(XNode root) &#123;</div><div class="line">        try &#123;</div><div class="line">            // 解析 &lt;settings /&gt; 标签</div><div class="line">            Properties e = this.settingsAsPropertiess(root.evalNode(&quot;settings&quot;));</div><div class="line">            // 解析 &lt;properties /&gt; 标签</div><div class="line">            this.propertiesElement(root.evalNode(&quot;properties&quot;));</div><div class="line">            // 加载自定义 VFS 实现类</div><div class="line">            this.loadCustomVfs(e);</div><div class="line">            // 解析 &lt;typeAliases /&gt; 标签</div><div class="line">            this.typeAliasesElement(root.evalNode(&quot;typeAliases&quot;));</div><div class="line">            // 解析 &lt;plugins /&gt; 标签</div><div class="line">            this.pluginElement(root.evalNode(&quot;plugins&quot;));</div><div class="line">            // 解析 &lt;objectFactory /&gt; 标签</div><div class="line">            this.objectFactoryElement(root.evalNode(&quot;objectFactory&quot;));</div><div class="line">            // 解析 &lt;objectWrapperFactory /&gt; 标签</div><div class="line">            this.objectWrapperFactoryElement(root.evalNode(&quot;objectWrapperFactory&quot;));</div><div class="line">            // 解析 &lt;reflectorFactory /&gt; 标签</div><div class="line">            this.reflectionFactoryElement(root.evalNode(&quot;reflectionFactory&quot;));</div><div class="line">            // 赋值 &lt;settings /&gt; 到 Configuration 属性</div><div class="line">            this.settingsElement(e);</div><div class="line">            // 解析 &lt;environments /&gt; 标签</div><div class="line">            this.environmentsElement(root.evalNode(&quot;environments&quot;));</div><div class="line">            // 解析 &lt;databaseIdProvider /&gt; 标签</div><div class="line">            this.databaseIdProviderElement(root.evalNode(&quot;databaseIdProvider&quot;));</div><div class="line">            // 解析 &lt;typeHandlers /&gt; 标签</div><div class="line">            this.typeHandlerElement(root.evalNode(&quot;typeHandlers&quot;));</div><div class="line">            // 解析 &lt;mappers /&gt; 标签</div><div class="line">            this.mapperElement(root.evalNode(&quot;mappers&quot;));</div><div class="line">        &#125; catch (Exception var3) &#123;</div><div class="line">            throw new BuilderException(&quot;Error parsing SQL Mapper Configuration. Cause: &quot; + var3, var3);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="传统模式里入口"><a href="#传统模式里入口" class="headerlink" title="传统模式里入口"></a>传统模式里入口</h3><p>SqlsessionFactoryBuilder调用build的时候，会生成XMLConfigBuilder。然后XMLConfigBuilder调用parse方法解析配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// SqlSessionFactoryBuilder.java</div><div class="line"></div><div class="line"> public SqlSessionFactory build(Reader reader, String environment, Properties properties) &#123;</div><div class="line">        SqlSessionFactory var5;</div><div class="line">        try &#123;</div><div class="line">            XMLConfigBuilder e = new XMLConfigBuilder(reader, environment, properties);</div><div class="line">            var5 = this.build(e.parse());</div><div class="line">        ...</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="spring整合mybatis的入口"><a href="#spring整合mybatis的入口" class="headerlink" title="spring整合mybatis的入口"></a>spring整合mybatis的入口</h3><p>SqlSessionFactoryBean实现InitializingBean接口，所以项目启动后，当所有bean创建完成会自动调用SqlSessionFactoryBean的afterPropertiesSet，里面就有生成XMLConfigBuilder。然后XMLConfigBuilder调用parse方法解析配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">// SqlSessionFactoryBean.java</div><div class="line"></div><div class="line">   public void afterPropertiesSet() throws Exception &#123;</div><div class="line">        ...</div><div class="line">        this.sqlSessionFactory = this.buildSqlSessionFactory();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    protected SqlSessionFactory buildSqlSessionFactory() throws IOException &#123;</div><div class="line">        XMLConfigBuilder xmlConfigBuilder = null;</div><div class="line">        if(xmlConfigBuilder != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                xmlConfigBuilder.parse();</div><div class="line">                if(LOGGER.isDebugEnabled()) &#123;</div><div class="line">                    LOGGER.debug(&quot;Parsed configuration file: \&apos;&quot; + this.configLocation + &quot;\&apos;&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125; catch (Exception var22) &#123;</div><div class="line">                throw new NestedIOException(&quot;Failed to parse config resource: &quot; + this.configLocation, var22);</div><div class="line">            &#125; finally &#123;</div><div class="line">                ErrorContext.instance().reset();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">       ....</div></pre></td></tr></table></figure>
+<h2 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h2><h3 id="获取mapper接口"><a href="#获取mapper接口" class="headerlink" title="获取mapper接口"></a>获取mapper接口</h3><p>sqlsession调用getMapper的时序图如下：<br><img src="/asset/article/20210424/1.png" alt="image"></p>
+<ul>
+<li><p>在调用getMapper之后，会去Configuration对象中获取Mapper对象，因为在项目启动的时候就会把Mapper接口加载并解析存储到Configuration对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DefaultSqlSession.java</div><div class="line">  public &lt;T&gt; T getMapper(Class&lt;T&gt; type) &#123;</div><div class="line">        return this.configuration.getMapper(type, this);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过Configuration对象中的MapperRegistry对象属性，继续调用getMapper方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Configuration.java</div><div class="line">    public &lt;T&gt; T getMapper(Class&lt;T&gt; type, SqlSession sqlSession) &#123;</div><div class="line">        return this.mapperRegistry.getMapper(type, sqlSession);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类生成对应Mapper的代理类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">MapperRegister.java</div><div class="line">    public &lt;T&gt; T getMapper(Class&lt;T&gt; type, SqlSession sqlSession) &#123;</div><div class="line">        MapperProxyFactory mapperProxyFactory = (MapperProxyFactory)this.knownMappers.get(type);</div><div class="line">        if(mapperProxyFactory == null) &#123;</div><div class="line">            throw new BindingException(&quot;Type &quot; + type + &quot; is not known to the MapperRegistry.&quot;);</div><div class="line">        &#125; else &#123;</div><div class="line">            try &#123;</div><div class="line">                return mapperProxyFactory.newInstance(sqlSession);</div><div class="line">            &#125; catch (Exception var5) &#123;</div><div class="line">                throw new BindingException(&quot;Error getting mapper instance. Cause: &quot; + var5, var5);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>最终获取到我们接口对应的代理类MapperProxy对象,而MapperProxy可以看到实现了InvocationHandler，使用的就是JDK动态代理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">MapperProxyFactory.java</div><div class="line">    protected T newInstance(MapperProxy&lt;T&gt; mapperProxy) &#123;</div><div class="line">        return Proxy.newProxyInstance(this.mapperInterface.getClassLoader(), new Class[]&#123;this.mapperInterface&#125;, mapperProxy);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public T newInstance(SqlSession sqlSession) &#123;</div><div class="line">        MapperProxy mapperProxy = new MapperProxy(sqlSession, this.mapperInterface, this.methodCache);</div><div class="line">        return this.newInstance(mapperProxy);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="寻找sql"><a href="#寻找sql" class="headerlink" title="寻找sql"></a>寻找sql</h3><ul>
+<li><p>sql语句的时序图<br><img src="/asset/article/20210424/2.png" alt="image"></p>
+</li>
+<li><p>调用被代理对象的方法之后实际上执行的就是代理对象的invoke方法</p>
+<pre><code>MapperProxy.java
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+      //如果调用的方法是继承自object的 那么直接调用即可 如toString()
+      if(Object.class.equals(method.getDeclaringClass())) {
+          try {
+              return method.invoke(this, args);
+          } catch (Throwable var5) {
+              throw ExceptionUtil.unwrapThrowable(var5);
+          }
+      } else {
+      //否则如果是mapper里自定义的方法，则走这个分支
+          MapperMethod mapperMethod = this.cachedMapperMethod(method);
+          return mapperMethod.execute(this.sqlSession, args);
+      }
+  }
+</code></pre></li>
+</ul>
+<ul>
+<li><p>接下来，是构造一个MapperMethod对象,这个对象封装了Mapper接口中对应的方法信息以及对应的sql语句信息</p>
+<pre><code>public class MapperMethod {
+ //记录sql语句以及语句类型
+ private final MapperMethod.SqlCommand command;
+ //记录mapper接口中方法信息
+ private final MapperMethod.MethodSignature method;
+</code></pre><h3 id="执行sql"><a href="#执行sql" class="headerlink" title="执行sql"></a>执行sql</h3></li>
+<li><p>执行sql的语句图<br><img src="/asset/article/20210424/3.png" alt="image"></p>
+</li>
+<li><p>MapperMethod的execute方法会根据sql的语句类型和返回值类型选择不同的执行方法<br><img src="/asset/article/20210424/4.png" alt="image"></p>
+</li>
+<li><p>绕了一圈 还是用SqlSession封装好的接口<br><img src="/asset/article/20210424/5.png" alt="image"></p>
+</li>
+<li><p>sqlsession并不直接操作数据库，mybatis对数据库的操作统一有执行器executor来完成<br><img src="/asset/article/20210424/6.png" alt="image"></p>
+</li>
+<li><p>executor参数准备完毕后，调用doQuery方法开始查询数据库，这里面代码几乎和手写jdbc连接查询数据库是一致的</p>
+<pre><code>BatchExecutor.java
+  public &lt;E&gt; List&lt;E&gt; doQuery(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+     Statement stmt = null;
+     List var10;
+     try {
+         this.flushStatements();
+         Configuration configuration = ms.getConfiguration();
+         StatementHandler handler = configuration.newStatementHandler(this.wrapper, ms, parameterObject, rowBounds, resultHandler, boundSql);
+         Connection connection = this.getConnection(ms.getStatementLog());
+         stmt = handler.prepare(connection, this.transaction.getTimeout());
+         //入参设置
+         handler.parameterize(stmt);
+         var10 = handler.query(stmt, resultHandler);
+     } finally {
+         this.closeStatement(stmt);
+     }
+
+     return var10;
+ }
+</code></pre></li>
+</ul>
+<ul>
+<li><p>statementHandler调用query前会调用parameterize进行入参设置</p>
+</li>
+<li><p>statementHandler的query里，封装PreparedStatement，执行executor查询数据</p>
+<pre><code>StatementHandler.java
+public &lt;E&gt; List&lt;E&gt; query(Statement statement, ResultHandler resultHandler) throws SQLException {
+ PreparedStatement ps = (PreparedStatement)statement;
+ ps.execute();
+ return this.resultSetHandler.handleResultSets(ps);
+  }
+</code></pre></li>
+<li>最后调用ResultSetHandler的handleResultSets来进行出参转换</li>
+</ul>
+<h2 id="工作流程图"><a href="#工作流程图" class="headerlink" title="工作流程图"></a>工作流程图</h2><p><img src="/asset/article/20210424/7.jpg" alt="image"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/22/restTemplate泛型问题/" rel="next" title="restTemplate泛型问题">
+                <i class="fa fa-chevron-left"></i> restTemplate泛型问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/11/08/快速删除redis缓存内容/" rel="prev" title="快速删除redis缓存内容">
+                快速删除redis缓存内容 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/asset/blogImg/blogUser.jpg"
+               alt="Mr. Xu" />
+          <p class="site-author-name" itemprop="name">Mr. Xu</p>
+          <p class="site-description motion-element" itemprop="description">记录自己平时的小槽点，<br>不扯天马行空的大道理。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">52</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+
+          <!-- 网易云音乐插件 -->
+          <div class="links-of-author motion-element">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="20" width=530 height=86 src="//music.163.com/outchain/player?type=2&id=694286&auto=1&height=66"></iframe>
+         </div> 
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">1.</span> <span class="nav-text">使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传统工作模式"><span class="nav-number">1.1.</span> <span class="nav-text">传统工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Mapper接口"><span class="nav-number">1.2.</span> <span class="nav-text">使用Mapper接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring整合mybatis"><span class="nav-number">1.3.</span> <span class="nav-text">spring整合mybatis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化配置文件"><span class="nav-number">2.</span> <span class="nav-text">初始化配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解析的内容"><span class="nav-number">2.1.</span> <span class="nav-text">解析的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传统模式里入口"><span class="nav-number">2.2.</span> <span class="nav-text">传统模式里入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring整合mybatis的入口"><span class="nav-number">2.3.</span> <span class="nav-text">spring整合mybatis的入口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行流程"><span class="nav-number">3.</span> <span class="nav-text">执行流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取mapper接口"><span class="nav-number">3.1.</span> <span class="nav-text">获取mapper接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找sql"><span class="nav-number">3.2.</span> <span class="nav-text">寻找sql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行sql"><span class="nav-number">3.3.</span> <span class="nav-text">执行sql</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程图"><span class="nav-number">4.</span> <span class="nav-text">工作流程图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr. Xu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/shizuku.model.json"},"display":{"position":"left","width":200,"height":400,"opacity":0.4},"mobile":{"show":false},"log":false});</script></body>
+</html>
