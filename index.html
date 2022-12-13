@@ -313,38 +313,14 @@
 
       
         
-          
-            <a id="more"></a>
-<h2 id="堆设置"><a href="#堆设置" class="headerlink" title="堆设置"></a>堆设置</h2><ul>
-<li>-Xms：设置jvm启动时堆内存的初始大小</li>
-<li>-Xmx：设置堆内存最大值</li>
-<li>-Xmn：设置年轻代大小，剩下的为老年代空间大小</li>
-<li>-XX:SurvivorRatio<br>设置Eden区和Survivor区的空间比例 默认为8，即Eden区：From区：To区 = 8： 1：1</li>
-<li>-XX:NewRatio<br>设置新生代（Eden + 2*Survivor）与老年代（不包括永久区）的比值，默认值为2。 </li>
-</ul>
-<h2 id="收集器设置"><a href="#收集器设置" class="headerlink" title="收集器设置"></a>收集器设置</h2><ul>
-<li>-XX:+UseSerialGC 设置串行收集器</li>
-<li>-XX:+UseParallelGC 设置并行收集器</li>
-<li>-XX:+UseParalledlOldGC 设置并行年老代收集器</li>
-<li>-XX:+UseConcMarkSweepGC 设置并发收集器</li>
-</ul>
-<h2 id="并行收集器设置"><a href="#并行收集器设置" class="headerlink" title="并行收集器设置"></a>并行收集器设置</h2><ul>
-<li>-XX:ParallelGCThreads=n 设置并行收集器收集时使用的CPU数。并行收集线程数。</li>
-<li>-XX:MaxGCPauseMillis=n 设置并行收集最大暂停时间</li>
-<li>-XX:GCTimeRatio=n 设置垃圾回收时间占程序运行时间的百分比。公式为1/(1+n)</li>
-</ul>
-<h2 id="并发收集器设置"><a href="#并发收集器设置" class="headerlink" title="并发收集器设置"></a>并发收集器设置</h2><p>-XX:+CMSIncrementalMode 设置为增量模式。适用于单CPU情况。<br>-XX:ParallelGCThreads=n 设置并发收集器年轻代收集方式为并行收集时，使用的CPU数。并行收集线程数。</p>
-<h2 id="垃圾回收统计信息"><a href="#垃圾回收统计信息" class="headerlink" title="垃圾回收统计信息"></a>垃圾回收统计信息</h2><ul>
-<li>-XX:+PrintGC</li>
-<li>-XX:+PrintGCDetails</li>
-<li>-XX:+PrintGCTimeStamps</li>
-<li>-Xloggc:filename</li>
-</ul>
-<h2 id="典型配置"><a href="#典型配置" class="headerlink" title="典型配置"></a>典型配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -Xmx3550m -Xms3550m -Xmn2g -Xss128k -XX:ParallelGCThreads=20 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC</div></pre></td></tr></table></figure>
-<p>-XX:+UseConcMarkSweepGC设置年老代为并发收集。<br>-XX:+UseParNewGC 设置年轻代为并行收集，可与CMS收集同时使用。<br>-XX:ParallelGCThreads=20 配置并行收集器的线程数，即：同时多少个线程一起进行垃圾回收。此值最好配置与处理器数目相等。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-Xmx10240m -Xms10240m -Xmn2560m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:+ExplicitGCInvokesConcurrent -XX:CMSInitiatingOccupancyFraction=75 -XX:ParallelGCThreads=4 -XX:CICompilerCount=4 -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/dumps/ -Dsun.net.inetaddr.ttl=1800</div></pre></td></tr></table></figure>
-
-          
+          <p>jvm参数和调优<br>
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2022/12/13/jvm参数和调优/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1516,7 +1492,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
