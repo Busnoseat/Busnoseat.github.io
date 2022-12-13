@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="jvm," />
 
 
 
@@ -84,12 +84,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="学习是件开心事">
-<meta property="og:url" content="http://yoursite.com/archives/2020/07/index.html">
+<meta name="description" content="java代码运行的基础理论知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm如何运行java代码">
+<meta property="og:url" content="http://yoursite.com/2022/11/18/jvm如何运行java代码/index.html">
 <meta property="og:site_name" content="学习是件开心事">
+<meta property="og:description" content="java代码运行的基础理论知识">
+<meta property="og:image" content="http://yoursite.com/asset/article/20221123/1.png">
+<meta property="og:updated_time" content="2022-12-12T14:52:14.540Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="学习是件开心事">
+<meta name="twitter:title" content="jvm如何运行java代码">
+<meta name="twitter:description" content="java代码运行的基础理论知识">
+<meta name="twitter:image" content="http://yoursite.com/asset/article/20221123/1.png">
 
 
 
@@ -117,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2020/07/"/>
+  <link rel="canonical" href="http://yoursite.com/2022/11/18/jvm如何运行java代码/"/>
 
 
 
 
 
-  <title> 归档 | 学习是件开心事 </title>
+  <title> jvm如何运行java代码 | 学习是件开心事 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +150,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -224,65 +230,153 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-       
-        
-      好! 目前共计 52 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
 
-      
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/18/jvm如何运行java代码/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Mr. Xu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/asset/blogImg/blogUser.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="学习是件开心事">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="学习是件开心事" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                jvm如何运行java代码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-11-18T17:00:00+08:00">
+                2022-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
       
 
       
+        <p>java代码运行的基础理论知识<br><a id="more"></a></p>
+<h2 id="java代码怎么运行的"><a href="#java代码怎么运行的" class="headerlink" title="java代码怎么运行的"></a>java代码怎么运行的</h2><p>从虚拟机的视角来看，执行java代码首先需要将它编译而成的class文件加载到java虚拟机中。加载后的java类会被存放在方法区中。实际运行时，虚拟机会执行方法区的代码。在运行过程中，每当调用进入一个java方法，java虚拟机会在当前线程的java方法栈中生成一个栈帧，用以存放局部变量以及字节码的操作数。这个栈帧的大小是提前计算好的，而且java虚拟机不要求栈帧在内存空间里连续分布<br><img src="/asset/article/20221123/1.png" alt="Image text"><br>在hotspot里面，上述翻译过程有两种形式：第一种是解释执行，即逐条将字节码翻译成机器码并执行；第二种是即时编译（JIT），即将一个方法包含的所有字节码编译成机器码后再执行。前者的优势在于无需等待编译，而后者的优势在于实际运行速度更快。HotSpot默认采用混合模式，综合了解释执行和即时编译两者的优点。他会先解释执行字节码，而后将其中反复执行的热点代码以方法为单位进行即时编译。</p>
+<h2 id="java虚拟机的运行效率究竟怎么样"><a href="#java虚拟机的运行效率究竟怎么样" class="headerlink" title="java虚拟机的运行效率究竟怎么样"></a>java虚拟机的运行效率究竟怎么样</h2><p>即时编译是建立在程序符合二八定律的假设上，也就是百分之二十的代码占据了百分之八十的计算资源。<br>对于占据大部分的不常用的代码，我们无需好分时间将其编译成机器码，而是采用解释执行的方式运行；另一方面，对于仅占据小部分的热点代码，我们则可以将其编译为机器码，以达到理想的运行速度。<br>理论上讲，即时编译后的java程序的执行效率，是可能超过c++的。这是因为与静态编译相比，即时编译拥有程序的运行时信息，并且能够根据这个信息做出相应的优化。举个栗子：对于一个虚方法的调用，尽管有很多个目标方法，但在实际运行过程中他可能只调用其中一个。这个信息可以被即时编译器所利用，来规避虚方法调用的开销。</p>
+
+      
+    </div>
+
+    <div>
+      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2020">2020</h2>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jvm/" rel="tag"># jvm</a>
+          
         </div>
       
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/11/08/快速删除redis缓存内容/" rel="next" title="快速删除redis缓存内容">
+                <i class="fa fa-chevron-left"></i> 快速删除redis缓存内容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/11/20/jvm内存区域/" rel="prev" title="jvm内存区域">
+                jvm内存区域 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2020/07/28/jvm内存模型/" itemprop="url">
-              
-                <span itemprop="name">jvm内存模型</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-07-28T13:34:51+08:00"
-              content="2020-07-28" >
-          07-28
-        </time>
-      </div>
-
-    </header>
+      
+    </footer>
   </article>
 
 
 
-    
-
-  </section>
-
-  
-
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -290,6 +384,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -309,8 +407,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/asset/blogImg/blogUser.jpg"
@@ -321,7 +428,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">52</span>
+              <span class="site-state-item-count">58</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -362,6 +469,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#java代码怎么运行的"><span class="nav-number">1.</span> <span class="nav-text">java代码怎么运行的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java虚拟机的运行效率究竟怎么样"><span class="nav-number">2.</span> <span class="nav-text">java虚拟机的运行效率究竟怎么样</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
@@ -467,11 +590,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
 
 
   
